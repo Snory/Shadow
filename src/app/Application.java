@@ -28,22 +28,21 @@ public class Application {
             //width, height
             int width = 512;
             int height = 384;
-            //frame
-            Frame testFrame = new Frame("TestFrame");
-            testFrame.setSize(width, height);
-            //Renderer
-            Renderer renderer = new Renderer(width, height);
-            //input manager
-            InputManager inputManager = new InputManager();
-            renderer.setInputManager(inputManager);
             // setup OpenGL Version 2
             GLProfile profile = GLProfile.get(GLProfile.GL2);
             GLCapabilities capabilities = new GLCapabilities(profile);
             // The canvas is the widget that's drawn in the JFrame
             final GLCanvas canvas = new javax.media.opengl.awt.GLCanvas(capabilities);
             final FPSAnimator animator = new FPSAnimator(canvas, 60, true);
+
+            //frame
+            Gui gui = new Gui(canvas);
+           //Renderer
+            Renderer renderer = new Renderer(width, height);
+            //input manager
+            InputManager inputManager = new InputManager();
+            renderer.setInputManager(inputManager);
             //canvas
-            canvas.setSize(width, height);
             canvas.setFocusable(true);
             canvas.requestFocus();
             //listenery
@@ -52,10 +51,10 @@ public class Application {
             canvas.addMouseListener(inputManager);
             canvas.addMouseMotionListener(inputManager);
             //canvas na frame
-            testFrame.add(canvas);
+            gui.add(canvas);
             // shutdown the program on windows close event
             // final Animator animator = new Animator(canvas);
-            testFrame.addWindowListener(new WindowAdapter() {
+            gui.addWindowListener(new WindowAdapter() {
                 @Override
                 public void windowClosing(WindowEvent e) {
                     new Thread() {
@@ -69,8 +68,6 @@ public class Application {
                     }.start();
                 }
             });
-            testFrame.setLocationRelativeTo(null);
-            testFrame.setVisible(true);
             animator.start(); // start the animation loop
         } catch (Exception e) {
             e.printStackTrace();
