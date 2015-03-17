@@ -20,6 +20,19 @@ BaseLight base;
 vec3 direction;
 };
 uniform DirectionalLight drlight;
+
+struct Attentuation{
+float linear;
+float constant;
+float exponential;
+};
+
+struct PointLight{
+BaseLight base;
+Attentuation att;
+vec3 position;
+};
+
 in vec3 normal;
 in vec3 position;
 in vec4 shadowcoord;
@@ -29,14 +42,13 @@ uniform vec3 eyeposition;
 vec3 calculateDiffSpec(){
 vec3 n = normalize(normal);
 vec3 s = normalize(drlight.direction);
-vec3 diffuse =  mat.kd * drlight.base.color * drlight.base.intensity * max(dot(n,s),0.0);
+vec3 diffuse =  mat.kd * drlight.base.color * drlight.base.intensity * max(dot(s,n),0.0);
 vec3 r = normalize(reflect(-s,n));
 vec3 v = normalize(eyeposition - position);
 vec3 specular = vec3(0,0,0);
 if(dot(s,n) > 0.0){
 specular = (drlight.base.color * drlight.base.intensity) * mat.ks * pow(max(dot(r,v),0.0), mat.shininess);
 }
-
 return mat.ke +  diffuse + specular;
 }
 
