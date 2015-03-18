@@ -31,7 +31,6 @@ public class Renderer implements GLEventListener {
     long lastTime;
     int width, height; //velikost canvasu
     HashMap<String, Scene> scenes; //mapa scen
-    HashMap<String, Shader> shaders;
     GL2 gl;
     GLU glu;
     GLUT glut;
@@ -41,7 +40,7 @@ public class Renderer implements GLEventListener {
     int[] depthBuffer = new int[1];
     int[] frameBuffer = new int[1];
     int shadowWidth, shadowHeight;
-
+    ShadowMapShader shadowmapshader;
     public Renderer(int width, int height) {
         this.width = width;
         this.height = height;
@@ -56,11 +55,10 @@ public class Renderer implements GLEventListener {
         scenes = new HashMap<>(); //inicializace mapy scen
         scenes.put("Test", new Scene(gl)); //pøidání testovací scény
         scenes.get("Test").init(); //inicializování scény
-        scenes.get("Test").loadModel("vice.obj"); //naètení objektu
+        scenes.get("Test").loadModel("untitled.obj"); //naètení objektu
         scenes.get("Test").setCamera(new Camera(width, height)); //nastavení kamery
 
-        shaders = new HashMap<>();
-        shaders.put("ShadowMap", new ShadowMapShader(gl));
+        shadowmapshader = new ShadowMapShader(gl);
         createShadowMap(500, 500);
     }
 
@@ -80,7 +78,7 @@ public class Renderer implements GLEventListener {
         //uprava kamery
         inputManager.setCamera(scenes.get("Test").getCamera());
         inputManager.update(spd);
-
+        ShadowMapShader.setBiasType(ShadowMapShader.BiasType.CONSTATSLOPESCALED);
         gl.glBindFramebuffer(GL2.GL_FRAMEBUFFER, frameBuffer[0]);
         gl.glCullFace(GL2.GL_FRONT);
         // natøít a vyèistit
@@ -94,9 +92,9 @@ public class Renderer implements GLEventListener {
         gl.glMatrixMode(GL2.GL_MODELVIEW);
         gl.glLoadIdentity();
         gl.glViewport(0, 0, shadowWidth, shadowHeight);
-        shaders.get("ShadowMap").setSubrutine(Shader.Subroutine.FIRSTPASS);
-        scenes.get("Test").display(shaders.get("ShadowMap"));
-        setUpDepthMatrix(shaders.get("ShadowMap"));
+        shadowmapshader.setSubrutine(ShadowMapShader.Subroutine.FIRSTPASS);
+        scenes.get("Test").display(shadowmapshader);
+        setUpDepthMatrix(shadowmapshader);
         
         gl.glBindFramebuffer(GL2.GL_FRAMEBUFFER, 0);
         gl.glEnable(GL2.GL_DEPTH_TEST);
@@ -112,9 +110,9 @@ public class Renderer implements GLEventListener {
                 inputManager.getCamera().getUpX(), inputManager.getCamera().getUpY(), inputManager.getCamera().getUpZ());
         gl.glMatrixMode(GL2.GL_MODELVIEW);
         gl.glLoadIdentity();
-        shaders.get("ShadowMap").setSubrutine(Shader.Subroutine.SECONDPASS);
-        shaders.get("ShadowMap").setUniform("eyeposition", new Vec3D(inputManager.getCamera().getPosX(), inputManager.getCamera().getPosY(), inputManager.getCamera().getPosZ()));
-        scenes.get("Test").display(shaders.get("ShadowMap"));
+        shadowmapshader.setSubrutine(ShadowMapShader.Subroutine.SECONDPASS);
+        shadowmapshader.setUniform("eyeposition", new Vec3D(inputManager.getCamera().getPosX(), inputManager.getCamera().getPosY(), inputManager.getCamera().getPosZ()));
+        scenes.get("Test").display(shadowmapshader);
 
     }
 

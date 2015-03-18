@@ -25,8 +25,6 @@ public class Shader {
     private int shader;
     private HashMap<String, Integer> uniforms;
     private GL2 gl;
-    public enum Subroutine  {DEFAULT, FIRSTPASS, SECONDPASS};
-    Subroutine subrutine;
    
 
     public Shader(GL2 gl) {
@@ -135,8 +133,5 @@ public class Shader {
 
     }
 
-    public void setSubrutine(Subroutine subrutine) {
-        this.subrutine = subrutine;
-    }
 
 }

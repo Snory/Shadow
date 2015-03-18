@@ -22,6 +22,10 @@ public class ShadowMapShader extends Shader {
 
     public static BaseLight ambientLight = new BaseLight(new Vec3D(1, 1, 1), 0.5f);
     public static DirectionalLight drLight = new DirectionalLight(new BaseLight(new Vec3D(1, 1, 1), 1.0f), new Vec3D(10, 10, 10));
+    public enum Subroutine  {DEFAULT, FIRSTPASS, SECONDPASS};
+    static Subroutine subrutine;
+    public enum BiasType {CONSTANT,CONSTATSLOPESCALED,NORMAL};
+    static BiasType biasType;
 
     public ShadowMapShader(GL2 gl) {
         super(gl);
@@ -31,6 +35,7 @@ public class ShadowMapShader extends Shader {
 
         subrutine = Subroutine.DEFAULT;
         addUniform("subrutine");
+        addUniform("biasType");
         addUniform("MVP");
         addUniform("modelview");
         addUniform("projection");
@@ -58,6 +63,14 @@ public class ShadowMapShader extends Shader {
             setUniform("subrutine", 2);
         } else if (Subroutine.DEFAULT == subrutine) {
             setUniform("subrutine", 0);
+        }
+        
+        if(BiasType.CONSTANT == biasType){
+            setUniform("biasType", 0);
+        }else if (BiasType.CONSTATSLOPESCALED == biasType){
+            setUniform("biasType", 1);
+        }else if (BiasType.NORMAL == biasType){
+            setUniform("biasType", 2);
         }
         setUniform("MVP", modelview.mul(projection));
         setUniform("modelview", modelview);
@@ -91,5 +104,11 @@ public class ShadowMapShader extends Shader {
     public void setSubrutine(Subroutine subrutine) {
         this.subrutine = subrutine;
     }
+
+    public static void setBiasType(BiasType biasType) {
+        ShadowMapShader.biasType = biasType;
+    }
+    
+    
 
 }

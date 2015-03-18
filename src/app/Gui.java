@@ -5,11 +5,19 @@
  */
 package app;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.HeadlessException;
 import java.awt.Toolkit;
 import javax.media.opengl.awt.GLCanvas;
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JSlider;
+import javax.swing.JSpinner;
 
 /**
  *
@@ -27,13 +35,22 @@ public class Gui extends JFrame {
 
     private void init() {
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-        dim.width = dim.width;
-        dim.height = dim.height;
         setSize(dim);
-        canvas.setSize(dim.width, dim.height);
-        add(canvas);
+        setLayout(new BorderLayout());
+        setMinimumSize(new Dimension(800, 600));
+        add(canvas, BorderLayout.WEST);
+        add(createControlPanel(dim), BorderLayout.EAST);
         setLocationRelativeTo(null);
         setVisible(true);
+    }
+
+    private JPanel createControlPanel(Dimension dim) {
+        Dimension controlpanelDim = new Dimension(200, dim.height);
+        JPanel controlPanel = new JPanel();
+        controlPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+        controlPanel.setPreferredSize(controlpanelDim);
+
+        return controlPanel;
     }
 
 }

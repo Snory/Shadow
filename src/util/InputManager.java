@@ -10,6 +10,7 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import shader.Shader;
 
 /**
  *
@@ -18,6 +19,7 @@ import java.awt.event.MouseMotionListener;
 public class InputManager implements KeyListener, MouseListener, MouseMotionListener {
 
     Camera camera;
+    Shader shader;
     private double ox, oy;
     private int dx, dy;
 
