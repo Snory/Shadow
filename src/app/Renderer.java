@@ -78,7 +78,7 @@ public class Renderer implements GLEventListener {
         //uprava kamery
         inputManager.setCamera(scenes.get("Test").getCamera());
         inputManager.update(spd);
-        ShadowMapShader.setBiasType(ShadowMapShader.BiasType.CONSTATSLOPESCALED);
+        ShadowMapShader.setBiasType(ShadowMapShader.BiasType.CONSTANT);
         gl.glBindFramebuffer(GL2.GL_FRAMEBUFFER, frameBuffer[0]);
         gl.glCullFace(GL2.GL_FRONT);
         // natøít a vyèistit
@@ -141,6 +141,9 @@ public class Renderer implements GLEventListener {
         gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_MIN_FILTER, GL2.GL_NEAREST);
         gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_MAG_FILTER, GL2.GL_NEAREST);
 
+        gl.glTexParameteri(GL2.GL_TEXTURE_2D,GL2.GL_TEXTURE_COMPARE_MODE,GL2.GL_COMPARE_REF_TO_TEXTURE);
+        gl.glTexParameteri(GL2.GL_TEXTURE_2D,GL2.GL_TEXTURE_COMPARE_FUNC,GL2.GL_LESS);
+        
         gl.glTexParameterf(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_WRAP_S, GL2.GL_CLAMP);
         gl.glTexParameterf(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_WRAP_T, GL2.GL_CLAMP);
 

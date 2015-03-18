@@ -1,7 +1,7 @@
 #version 330
 uniform int subrutine;
 uniform float constantBias;
-uniform sampler2D shadowmap;
+uniform sampler2DShadow shadowmap;
 struct Material{
 vec3 ke;
 vec3 ka;
@@ -61,7 +61,7 @@ float z =  gl_FragCoord.z ;
 gl_FragColor = vec4(z, z, z, 1.0);
 
 }else if(subrutine ==2){
-float shadow = 1;
+float shadow = 0;
 vec4 shadowcoordWdiv = shadowcoord / shadowcoord.w;
 float bias = 0;
 if(biasType == 0){
@@ -73,9 +73,18 @@ float offsetL = offsetN / cosalpha;
 bias =  0.05 * offsetL;
 }
 if(shadowcoordWdiv.w > 0.0){
-if(texture(shadowmap,shadowcoordWdiv.xy).z + bias  < shadowcoordWdiv.z ){
-shadow = 0;
+float offsetXY = 1.0/500;
+for(int y = -1; y <= 1; y++){
+for(int x = -1; x <= 1; x++){
+    vec2 offset = vec2( x * offsetXY, y * offsetXY);
+    vec3 shadowCoordBiased = vec3(shadowcoordWdiv.xy + offset, shadowcoordWdiv.z - bias);
+    shadow += texture(shadowmap,shadowCoordBiased);
 }
+}
+
+shadow = (shadow / 9);
+
+
 }
 vec3 ambient =  mat.ka *  base.color * base.intensity;
 vec3 diffspec = calculateDiffSpec();
